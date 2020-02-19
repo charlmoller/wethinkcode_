@@ -1,0 +1,7 @@
+{
+	"extends": "strongloop",
+	"env": {
+        "browser": true,
+        "node": true
+    }
+}

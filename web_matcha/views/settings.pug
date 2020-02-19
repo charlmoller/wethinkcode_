@@ -1,0 +1,258 @@
+doctype html
+html
+	head
+		title Matcha
+		link(href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet")
+		link(rel="stylesheet" href="/stylesheets/style.css")
+		link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous")
+		link(rel="shortcut icon" href="favicon.png")
+		script(src="/javascripts/matcha.js" type="text/javascript")
+		script(src="https://code.jquery.com/jquery-3.4.1.min.js")
+		meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
+body(style="background-color: #fff !important;")
+	div.container(style="background-color: #fff !important;")
+		form(name="register" onsubmit="register_submit(); return false;" enctype="multipart/form-data")
+			br
+			h3.title #{title}
+			br
+			p#regmsg
+			p
+				button.btn.btn-secondary(id="location-btn") Update Location
+			br
+			p
+				button.btn.btn-secondary(onclick="change_password();" id="reset-btn") Change Password
+			br
+			p           Email 
+				input(type="email" name="email" required)
+			p            Name 
+				input(type="text" name="name" required)
+			p         Surname 
+				input(type="text" name="surname" required)
+			br
+			p          Gender 
+				select(name='gender')
+					option(value='male') Male
+					option(value='female') Female
+					option(value='other') Other
+			br
+			p Sexual interest 
+				select(name="interest")
+					option(value='male') Male
+					option(value='female') Female
+					option(value='male female') Both
+					option(value='other') Other
+					option(value='male other') Male and Other
+					option(value='female other') Female and Other
+			br
+			p    Date of Birth 
+				input(type="date" name="age" required)
+			br
+			p Add some of your interests:
+			p 
+				input(id="taglist" list='tags' name='tags' oninput="add_tag()")
+				datalist(id="tags") 
+			div#tag_container
+			br
+			p Bio:
+			p 
+				textarea(rows="4" cols="30" name="bio" maxlength = "200" required)
+			br
+			p
+				label(id="image1-lb" for="image1" class="btn btn-danger") Profile picture
+				input(type="file" name="file1" id="image1" style="display: none !important;")
+				br
+				img(id="image1-thumb" style="display:none;")
+			p
+				label(id="image2-lb" for="image2" class="btn btn-danger") Picture 1
+				input(type="file" name="file2" id="image2" style="display: none !important;")
+				br
+				img(id="image2-thumb" style="display:none;")
+			p
+				label(id="image3-lb" for="image3" class="btn btn-danger") Picture 2
+				input(type="file" name="file3" id="image3" style="display: none !important;")
+				br
+				img(id="image3-thumb" style="display:none;")
+			p
+				label(id="image4-lb" for="image4" class="btn btn-danger") Picture 3
+				input(type="file" name="file4" id="image4" style="display: none !important;")
+				br
+				img(id="image4-thumb" style="display:none;")
+			p
+				label(id="image5-lb" for="image5" class="btn btn-danger") Picture 4
+				input(type="file" name="file5" id="image5" style="display: none !important;")
+				br
+				img(id="image5-thumb" style="display:none;")
+			p
+				input(type="submit" class="bg-text" value="Save")
+
+	script.
+
+		document.getElementById("location-btn").addEventListener("click", function(event) {
+			event.preventDefault();
+			getLocation();
+		});
+
+		function getLocation() {
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(function(position) {
+					$.post({
+						url: 'api/updateLocation',
+						data: {
+							user: getLoggedInUserName(),
+							lat: position.coords.latitude,
+							lon: position.coords.longitude,
+						},
+						success: function() {
+						},
+					});
+				}, function(error) {
+					// Get location through other means
+					$.post({
+						url: 'api/updateLocation',
+						data: {
+							user: getLoggedInUserName(),
+						},
+						success: function() {
+						},
+					});
+				});
+			} else {
+				alert("Geolocation is not supported by this browser.");
+			}
+		}
+
+		var images = {};
+		var tags = [];
+		var possibleTags;
+
+		document.getElementById('image1').addEventListener('change', loadImage);
+		document.getElementById('image2').addEventListener('change', loadImage);
+		document.getElementById('image3').addEventListener('change', loadImage);
+		document.getElementById('image4').addEventListener('change', loadImage);
+		document.getElementById('image5').addEventListener('change', loadImage);
+
+		function change_password() {
+			location.href = '/changePassword/' + parseCookies(document.cookie)['login'];
+		}
+
+		function set_thumb_image(idd, data) {
+			if (data) {
+				var img = document.getElementById(idd + "-thumb");
+				img.src = data;
+				img.style = "max-width: 100px; display: block;";
+			}
+		}
+
+		function loadImage(e) {
+			var files = e.target.files;
+			if (FileReader && files && files.length) {
+				var fr = new FileReader();
+				fr.onload = function() {
+					images[e.target.id] = fr.result;
+					set_thumb_image(e.target.id, fr.result);
+				};
+				fr.readAsDataURL(files[0]);
+			}
+		}
+
+		window.addEventListener('load', function() {
+			xhr = new XMLHttpRequest();
+			xhr.open('GET', 'api/getTags', true);
+			xhr.setRequestHeader('Content-Type', 'application/json');
+			xhr.onload = function() {
+				possibleTags = JSON.parse(this.responseText);
+				possibleTags.forEach(function(item) {
+					var option = document.createElement('option');
+					option.value = item;
+					document.getElementById('tags').appendChild(option);
+				});
+			};
+			xhr.send();
+		});
+
+		function remove_elem(event) {
+			var par = document.getElementById('tag_container');
+			tags.splice(tags.indexOf(event.target.id, 1));
+			par.removeChild(event.currentTarget);
+		}
+
+		function create_tag_elem(val) {
+			var cont = document.getElementById('tag_container');
+			tags.push(val);
+			var wrap = document.createElement('div');
+			wrap.className = 'wrap';
+			wrap.id = val;
+			wrap.innerHTML = '<span>#' + val + '</span>';
+			wrap.addEventListener('click', remove_elem);
+			cont.appendChild(wrap);
+		}
+
+		function add_tag() {
+			var cont = document.getElementById('tag_container');
+			var val = document.getElementById('taglist').value;
+			var opts = document.getElementById('tags').childNodes;
+			for (var i = 0; i < opts.length; i++) {
+				if (opts[i].value === val) {
+					if (val != '' && !tags.includes(val)) {
+						create_tag_elem(val);
+					}
+					document.forms['register']['tags'].value = '';
+				}
+			}
+		}
+
+		function register_submit() {
+			xhr = new XMLHttpRequest();
+			xhr.open('POST', 'api/updateSettings', true);
+			xhr.setRequestHeader('Content-Type', 'application/json');
+			xhr.onload = register_response;
+			xhr.send(JSON.stringify({
+				gender: document.forms['register']['gender'].value.split(' '),
+				interest: document.forms['register']['interest'].value.split(' '),
+				age: document.forms['register']['age'].value,
+				bio: document.forms['register']['bio'].value,
+				tags: tags,
+				file1: images['image1'],
+				file2: images['image2'],
+				file3: images['image3'],
+				file4: images['image4'],
+				file5: images['image5'],
+			}));
+		}
+
+		function register_response() {
+			var msg = document.getElementById('regmsg');
+			var data = JSON.parse(this.responseText);
+			if (data['message'] == 'OK') {
+				location.href = '/';
+			} else {
+				msg.innerHTML = '*' + data['message'];
+			}
+		}
+
+		var user = !{user};
+		if (user) {
+			$("input[name=email]").val(user.email);
+			$("input[name=name]").val(user.name);
+			$("input[name=surname]").val(user.surname);
+			$("input[name=gender]").val(user.gender.join(' ')).change();
+			$("input[name=interest]").val(user.interest.join(' ')).change();
+			$("input[name=age]").val(user.age.split('T', 1)[0]);
+			$("textarea[name=bio]").val(user.bio);
+			set_thumb_image("image1", user.file1);
+			images["image1"] = user.file1;
+			set_thumb_image("image2", user.file2);
+			images["image2"] = user.file2;
+			set_thumb_image("image3", user.file3);
+			images["image3"] = user.file3;
+			set_thumb_image("image4", user.file4);
+			images["image4"] = user.file4;
+			set_thumb_image("image5", user.file5);
+			images["image5"] = user.file5;
+			tags = user.tags;
+			tags.forEach(function(tag) {
+				create_tag_elem(tag);
+			});
+		}
+
+		$(document).ready(getLocation);

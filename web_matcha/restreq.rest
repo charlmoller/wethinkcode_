@@ -1,0 +1,18 @@
+#! /bin/bash
+for i in 10 11 12 13 14 15 16 17 18 19 20
+do
+	curl -d "name=test$i&surname=test$i&email=test$i@test$i.com&pass=test$i&cpass=test$i" http://127.0.0.1:8080/api/register
+done
+
+for i in 10 11 12 13 14 15 16 17 18 19 20
+do
+	RR1=$[ $RANDOM % 2 ]
+	RR2=$[ $RANDOM % 2 ]
+	arr=("male" "female")
+	iii=${arr[$RR1]}
+	ggg=${arr[$RR2]}
+	curl -b "login=test$i@test$i.com" -d \
+	"file1=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAQCAYAAAAiYZ4HAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3gUDEyoL2Gz/6AAAANZJREFUKM+FUskNhDAMHKMUQErYH9VQx0rhTRF5g0QdVLM/SoAOZh/BiROxWksoPsbJeIyESKgts5TgtilSbCza8AR+ana50xS49yk3XuDeY/qcudwBwDoLFaSntWXwXAbP3FBxHK/qJRsvg6ezwPZ2BesZdIaQlfDV4PYCncO1kgoIGglaWREiQYD6AXz0CTBEQlLB8K7D6rVESXmOV6JDgdw7VJ8QKK7IqssyC8++Gb4rEp4/fwlbc2btLEIk4utccoqTEIljKzxe71rGttbZxD87NuEX4296gR87eggAAAAASUVORK5CYII=&gender[]=$iii&interest[]=$ggg&age=1997-11-03&bio=g&tags[]=Baton twirling" \
+	http://127.0.0.1:8080/api/updateSettings
+done
+

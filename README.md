@@ -1,21 +1,44 @@
 # 42
 
-This repo is a consolidation of the work from my time at [*WeThinkCode_*](https://www.wethinkcode.co.za/), an innovative coding school based on [*42*](https://en.wikipedia.org/wiki/42_(school)).
+This repo is a consolidation of the work from my time at WeThinkCode_, a selective and innovative software engineering school based on the [*42 school*](https://en.wikipedia.org/wiki/42_(school)) model.
 
-Link to [my original student github account](https://github.com/charlchi?tab=repositories).
+# Modules
 
-### Algorithms & Data Structures in C - `Y1S1`
+The course is broken down into modules, subdivided into projects completed in the span of 2-6 weeks each.  
 
-Sorting, searching algorithms and data structures. Final project `algo_corewar` includes building an assembler and a virtual CPU. No libraries allowed.
+## Year 1
 
-### Web Development in PHP, NodeJS & HTML/CSS frontends - `Y1S2`
+- #### Unix (C)
 
-Basics of web development. Final project `web_matcha` is a dating website built in NodeJS with express routing and MongoDB. No frameworks allowed.
+`unix_libft` - Rebuiling the C standard library functions from scratch.  
+`unix_printf` - Fully featured and extended "printf" clone.
 
-### Object Orientated Programming in C++ - `Y2S1`
+- #### 3D Graphics (C)
 
-Learning OOP with C++. Module included various applications from a `cpp_abstractvm` to the final project `cpp_bomberman`, a 3D recreation of the classic Bomberman game.
+`graph_fdf` - Displaying, scaling and rotating 3D model wireframes.  
+`graph_wolf3d` - Graphical replication of the original wolfenstein, in 2.5D.  
+`graph_rtv1` - Physically based ray traced rendering of 3D primitives with shadows.
 
-### Cloud - `Y2S2`
+- #### Algorithms, Compilers & VM's (C)
 
-Learning how to use `cloud_docker`. Final project `cloud_cloud-1` involved deploying scalable wordpress(haha) instances to google cloud.
+`algo_filler` - Go-like game where bots compete to fill space on a board.  
+`algo_lemin` - Graph traversal project.  
+`algo_pushswap` - Sorting algorithms, implemented using only 2 stacks.  
+`algo_corewar` - Involves building an assembler and a virtual CPU to load/run binaries. No libraries allowed.
+
+- #### Web development (NodeJs/PHP/HTML/CSS)
+
+`web_camagru` - Basic image-sharing website built in bare PHP.  
+`web_matcha` - Dating website built in NodeJS with express routing and MongoDB. No frameworks allowed.
+
+## Year 2
+
+- #### OOP and 3D game development (C++)
+
+`cpp_abstractvm` - Building a stack-based virtual machine.  
+`cpp_bomberman` - 3D recreation of the classic Bomberman game.
+
+- #### Cloud Infrastructure (Docker/Kubernetes/GCP)
+
+`cloud_docker` - Learning to use Docker.  
+`cloud_cloud-1` - Deploying automatically scaling application instances to google cloud.

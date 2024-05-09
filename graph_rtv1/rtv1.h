@@ -19,9 +19,15 @@
 # include <unistd.h>
 # include <math.h>
 # include <time.h>
+#if defined(__APPLE__)
+# include <OpenGL/gl.h>
+# include <OpenGL/glu.h>
+# include <GLUT/glut.h>
+#else
 # include <GL/gl.h>
-# include <GL/glut.h>
 # include <GL/glu.h>
+# include <GL/glut.h>
+#endif
 # include "libft/libft.h"
 # include "vec3.h"
 # include "geometry.h"
